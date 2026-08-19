@@ -343,7 +343,7 @@ async function buscarCotacoesCrypto(ativos) {
 
             const resposta =
                 await fetch(
-                    `https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd,brl`
+                    `https://wallet-app-buia.onrender.com${id}&vs_currencies=usd,brl`
                 );
 
 
