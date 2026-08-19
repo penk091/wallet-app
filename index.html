@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Wallet</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <main class="app">
+
+<h1>ᴡ ᴀ ʟ ʟ ᴇ ᴛ</h1>
+
+<div class="moeda-switch">
+    <button id="btn-real" class="moeda-ativa" onclick="selecionarMoeda('BRL')">R$</button>
+    <button id="btn-dolar" onclick="selecionarMoeda('USD')">US$</button>
+</div>
+
+<div class="cotacao-dolar">
+    <span id="cotacao-dolar">Dólar: carregando...</span>
+    <span id="atualizacao-dolar"></span>
+</div>
+
+<section class="patrimonio">
+    <p>Patrimônio total</p>
+    <h2>R$ 0,00</h2>
+
+    <div class="resultado">
+        <span>R$ 0,00</span>
+        <span>0,00%</span>
+    </div>
+
+    <div class="atualizacao">
+        <span>Última atualização: --:--</span>
+        <button id="btn-atualizar">↻ Atualizar</button>
+    </div>
+</section>
+
+        <section class="evolucao">
+            <h3>Evolução do patrimônio</h3>
+
+            <div class="grafico">
+    <canvas id="grafico-evolucao"></canvas>
+</div>
+
+            <div class="periodos">
+                <button>1S</button>
+                <button>1M</button>
+                <button>6M</button>
+                <button>1A</button>
+                <button>TUDO</button>
+            </div>
+        </section>
+
+        <section class="composicao">
+            <h3>Composição</h3>
+
+           <div class="pizza" id="pizza">
+</div>
+
+            <div class="legenda">
+
+    <p>
+        <span class="bolinha b3"></span>
+        B3
+        <strong id="porcentagem-b3">0%</strong>
+    </p>
+
+    <p>
+        <span class="bolinha eua"></span>
+        Ações EUA
+        <strong id="porcentagem-eua">0%</strong>
+    </p>
+
+    <p>
+        <span class="bolinha crypto"></span>
+        Crypto
+        <strong id="porcentagem-crypto">0%</strong>
+    </p>
+
+</div>
+        </section>
+
+        <section class="botoes">
+
+            <button onclick="window.location.href='carteira.html'">
+                💼 Minha carteira
+                <span>→</span>
+            </button>
+
+            <button onclick="abrirAnalistaIA()">
+    🤖 Analista IA
+    <span>→</span>
+</button>
+
+        </section>
+
+    </main>
+
+    <script src="js/dados.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>

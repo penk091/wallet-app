@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Minha Carteira</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <main class="app">
+
+        <button class="voltar" onclick="window.location.href='index.html'">
+            ← Voltar
+        </button>
+
+        <h1>MINHA CARTEIRA</h1>
+
+
+        <section class="resumo-carteira">
+
+            <p>Patrimônio total</p>
+
+            <h2 id="patrimonio-carteira">
+                R$ 0,00
+            </h2>
+
+            <div class="resultado">
+
+                <span id="lucro-carteira">
+                    R$ 0,00
+                </span>
+
+                <span id="rentabilidade-carteira">
+                    0,00%
+                </span>
+
+            </div>
+
+            <div class="resumo-dividendos">
+
+                <span>Dividendos recebidos</span>
+
+                <strong id="dividendos-carteira">
+                    R$ 0,00
+                </strong>
+
+            </div>
+
+        </section>
+
+
+        <section class="ativos">
+
+            <div class="categoria">
+
+                <h3>🇧🇷 B3</h3>
+
+                <div id="lista-b3">
+
+                    <p class="vazio">
+                        Nenhum ativo cadastrado.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="categoria">
+
+                <h3>🇺🇸 Ações EUA</h3>
+
+                <div id="lista-eua">
+
+                    <p class="vazio">
+                        Nenhum ativo cadastrado.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="categoria">
+
+                <h3>₿ Crypto</h3>
+
+                <div id="lista-crypto">
+
+                    <p class="vazio">
+                        Nenhum ativo cadastrado.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <button
+            class="adicionar-ativo"
+            onclick="abrirFormulario()"
+        >
+            ＋ Adicionar ativo
+        </button>
+
+
+        <!-- FORMULÁRIO DE ATIVO -->
+
+        <section
+            class="formulario"
+            id="formulario"
+        >
+
+            <div class="formulario-topo">
+
+                <h3>Adicionar ativo</h3>
+
+                <button onclick="fecharFormulario()">
+                    ✕
+                </button>
+
+            </div>
+
+
+            <label>
+                Categoria
+            </label>
+
+            <select id="categoria">
+
+                <option value="B3">
+                    🇧🇷 B3
+                </option>
+
+                <option value="EUA">
+                    🇺🇸 Ações EUA
+                </option>
+
+                <option value="CRYPTO">
+                    ₿ Crypto
+                </option>
+
+            </select>
+
+
+            <label>
+                Ativo
+            </label>
+
+            <input
+                type="text"
+                id="ticker"
+                placeholder="Ex: ITUB4 ou BTC"
+            >
+
+
+            <label>
+                Quantidade
+            </label>
+
+            <input
+                type="number"
+                id="quantidade"
+                placeholder="Ex: 100"
+                step="any"
+            >
+
+
+            <label>
+                Preço médio
+            </label>
+
+            <input
+                type="number"
+                id="preco-medio"
+                placeholder="Ex: 38.50"
+                step="any"
+            >
+
+
+            <button
+                class="salvar-ativo"
+                onclick="adicionarAtivo()"
+            >
+                SALVAR ATIVO
+            </button>
+
+        </section>
+
+
+        <!-- FORMULÁRIO DE DIVIDENDO -->
+
+        <section
+            class="formulario"
+            id="formulario-dividendo"
+        >
+
+            <div class="formulario-topo">
+
+                <h3>
+                    💰 Registrar dividendo
+                </h3>
+
+                <button onclick="fecharFormularioDividendo()">
+                    ✕
+                </button>
+
+            </div>
+
+
+            <p
+                id="ativo-dividendo"
+                class="ativo-dividendo"
+            >
+                —
+            </p>
+
+
+            <label>
+                Data-base
+            </label>
+
+            <input
+                type="date"
+                id="data-base"
+            >
+
+
+            <label>
+                Data do pagamento
+            </label>
+
+            <input
+                type="date"
+                id="data-pagamento"
+            >
+
+
+            <label>
+                Tipo
+            </label>
+
+            <select id="tipo-dividendo">
+
+                <option value="DIVIDENDO">
+                    Dividendo
+                </option>
+
+                <option value="JCP">
+                    JCP
+                </option>
+
+            </select>
+
+
+            <label>
+                Quantidade de ações
+            </label>
+
+            <input
+                type="number"
+                id="quantidade-dividendo"
+                placeholder="Ex: 100"
+                step="any"
+                min="0"
+            >
+
+
+            <label>
+                Total recebido
+            </label>
+
+            <input
+                type="number"
+                id="valor-dividendo"
+                placeholder="Ex: 150.00"
+                step="0.01"
+                min="0"
+            >
+
+
+            <div class="valor-por-acao">
+
+                <span>
+                    Valor por ação
+                </span>
+
+                <strong id="valor-por-acao">
+                    R$ 0,00
+                </strong>
+
+            </div>
+
+
+            <button
+                class="salvar-ativo"
+                onclick="salvarDividendo()"
+            >
+                SALVAR DIVIDENDO
+            </button>
+
+        </section>
+
+
+        <!-- HISTÓRICO DE DIVIDENDOS -->
+
+        <section
+            class="historico-dividendos"
+            id="historico-dividendos"
+        >
+
+        </section>
+
+    </main>
+
+
+    <script src="js/dados.js"></script>
+    <script src="js/carteira.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Analista IA</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+            padding: 20px;
+
+            background: #000;
+            color: #fff;
+
+            font-family: Arial, sans-serif;
+
+        }
+
+
+        .container {
+
+            max-width: 900px;
+            margin: 0 auto;
+
+        }
+
+
+        h1 {
+
+            font-size: 26px;
+            margin-bottom: 8px;
+
+        }
+
+
+        .descricao {
+
+            color: #888;
+            margin-bottom: 25px;
+
+            line-height: 1.5;
+
+        }
+
+
+        .acoes {
+
+            display: flex;
+            gap: 10px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        button {
+
+            border: 1px solid #333;
+
+            background: #111;
+            color: #fff;
+
+            padding: 14px 20px;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+
+        }
+
+
+        button:hover {
+
+            background: #1b1b1b;
+
+        }
+
+
+        button:disabled {
+
+            opacity: 0.5;
+            cursor: wait;
+
+        }
+
+
+        .resultado {
+
+            display: none;
+
+        }
+
+
+        .resultado.ativo {
+
+            display: block;
+
+        }
+
+
+        .status {
+
+            color: #888;
+
+            margin-bottom: 20px;
+
+            line-height: 1.5;
+
+        }
+
+
+        .resumo {
+
+            border: 1px solid #222;
+
+            background: #080808;
+
+            border-radius: 14px;
+
+            padding: 20px;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .resumo h2 {
+
+            margin-top: 0;
+
+        }
+
+
+        .ativos {
+
+            display: grid;
+
+            gap: 15px;
+
+        }
+
+
+        .ativo-analise {
+
+            border: 1px solid #222;
+
+            background: #080808;
+
+            border-radius: 14px;
+
+            padding: 18px;
+
+        }
+
+
+        .ativo-topo {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .ticker {
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+        }
+
+
+        .categoria {
+
+            font-size: 12px;
+
+            color: #777;
+
+            margin-left: 8px;
+
+        }
+
+
+        .positivo {
+
+            color: #35d07f;
+
+        }
+
+
+        .negativo {
+
+            color: #ff4d4d;
+
+        }
+
+
+        .neutro {
+
+            color: #aaa;
+
+        }
+
+
+        .favoravel {
+
+            color: #35d07f;
+
+        }
+
+
+        .cautela {
+
+            color: #ffb84d;
+
+        }
+
+
+        .info {
+
+            color: #aaa;
+
+            margin: 6px 0;
+
+        }
+
+
+        .analise-texto {
+
+            margin-top: 15px;
+
+            line-height: 1.7;
+
+            color: #ddd;
+
+            white-space: pre-line;
+
+        }
+
+
+        .dados-mercado {
+
+            border-top: 1px solid #222;
+
+            margin-top: 15px;
+
+            padding-top: 12px;
+
+        }
+
+
+        .pontuacao {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+        }
+
+
+        .carregando {
+
+            color: #888;
+
+        }
+
+
+        .vazio {
+
+            color: #666;
+
+            padding: 20px 0;
+
+        }
+
+
+        .erro {
+
+            color: #ff4d4d;
+
+            border: 1px solid #441111;
+
+            background: #160606;
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            line-height: 1.5;
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="container">
+
+
+        <h1>🤖 Analista IA</h1>
+
+
+        <p class="descricao">
+
+            Analise automaticamente todos os ativos da sua carteira
+            usando duas inteligências artificiais.
+
+        </p>
+
+
+        <div class="acoes">
+
+            <button
+                id="btn-analisar"
+                onclick="analisarMinhaCarteira()"
+            >
+
+                ANALISAR MINHA CARTEIRA
+
+            </button>
+
+        </div>
+
+
+        <div
+            id="status"
+            class="status"
+        ></div>
+
+
+        <div
+            id="resultado"
+            class="resultado"
+        >
+
+            <div
+                id="resumo"
+                class="resumo"
+            ></div>
+
+
+            <div
+                id="ativos"
+                class="ativos"
+            ></div>
+
+        </div>
+
+
+    </div>
+
+
+
+<script>
+
+
+// =====================================
+// API
+// =====================================
+
+const API =
+    "http://localhost:3000";
+
+
+
+// =====================================
+// OBTER CARTEIRA
+// =====================================
+
+function obterCarteira() {
+
+    try {
+
+        const dados =
+            JSON.parse(
+                localStorage.getItem(
+                    "carteira"
+                )
+            );
+
+
+        return Array.isArray(dados)
+            ? dados
+            : [];
+
+    }
+
+    catch (erro) {
+
+        console.error(
+            "Erro ao ler carteira:",
+            erro
+        );
+
+        return [];
+
+    }
+
+}
+
+
+
+// =====================================
+// OBTER ATIVOS
+// =====================================
+
+function obterAtivosCarteira() {
+
+    const carteira =
+        obterCarteira();
+
+
+    const mapa =
+        new Map();
+
+
+    carteira.forEach(
+        ativo => {
+
+            if (
+                !ativo ||
+                !ativo.ticker
+            ) {
+
+                return;
+
+            }
+
+
+            const ticker =
+                String(
+                    ativo.ticker
+                )
+                .trim()
+                .toUpperCase();
+
+
+            if (!ticker) {
+
+                return;
+
+            }
+
+
+            const categoria =
+                String(
+                    ativo.categoria ||
+                    "EUA"
+                )
+                .trim()
+                .toUpperCase();
+
+
+            const chave =
+                `${categoria}:${ticker}`;
+
+
+            if (
+                !mapa.has(chave)
+            ) {
+
+                mapa.set(
+                    chave,
+                    {
+
+                        ...ativo,
+
+                        ticker,
+
+                        categoria
+
+                    }
+                );
+
+            }
+
+        }
+    );
+
+
+    return Array.from(
+        mapa.values()
+    );
+
+}
+
+
+
+// =====================================
+// NORMALIZAR CRYPTO
+// =====================================
+
+function normalizarCrypto(ticker) {
+
+    return String(
+        ticker
+    )
+    .trim()
+    .toUpperCase()
+    .split("/")[0];
+
+}
+
+
+
+// =====================================
+// MAPEAR CRYPTO
+// =====================================
+
+function mapearCryptoId(simbolo) {
+
+    const mapa = {
+
+        BTC: "bitcoin",
+
+        ETH: "ethereum",
+
+        SOL: "solana",
+
+        XRP: "ripple",
+
+        ADA: "cardano",
+
+        DOGE: "dogecoin",
+
+        BNB: "binancecoin",
+
+        AVAX: "avalanche-2",
+
+        LINK: "chainlink",
+
+        DOT: "polkadot"
+
+    };
+
+
+    return (
+        mapa[simbolo] ||
+        simbolo.toLowerCase()
+    );
+
+}
+
+
+
+// =====================================
+// BUSCAR COTAÇÃO B3
+// =====================================
+
+async function buscarCotacaoB3(ticker) {
+
+    const resposta =
+        await fetch(
+            `https://brapi.dev/api/v2/stocks/quote?symbols=${encodeURIComponent(ticker)}`
+        );
+
+
+    if (!resposta.ok) {
+
+        throw new Error(
+            `Erro B3 ${ticker}: ${resposta.status}`
+        );
+
+    }
+
+
+    const dados =
+        await resposta.json();
+
+
+    if (
+        !dados.results ||
+        !dados.results.length
+    ) {
+
+        throw new Error(
+            `Cotação não encontrada para ${ticker}`
+        );
+
+    }
+
+
+    const resultado =
+        dados.results[0];
+
+
+    /*
+        A brapi pode retornar:
+
+        resultado.regularMarketPrice
+
+        ou, dependendo do endpoint:
+
+        resultado.data.regularMarketPrice
+    */
+
+    const preco =
+        Number(
+            resultado.regularMarketPrice ??
+            resultado.data?.regularMarketPrice ??
+            resultado.lastPrice ??
+            resultado.data?.lastPrice
+        );
+
+
+    if (
+        !Number.isFinite(preco) ||
+        preco <= 0
+    ) {
+
+        throw new Error(
+            `Preço inválido para ${ticker}`
+        );
+
+    }
+
+
+    return {
+
+        preco,
+
+        moeda: "BRL"
+
+    };
+
+}
+
+
+
+// =====================================
+// BUSCAR COTAÇÃO EUA
+// =====================================
+
+async function buscarCotacaoEUA(ticker) {
+
+    const resposta =
+        await fetch(
+            `${API}/cotacao/${encodeURIComponent(ticker)}`
+        );
+
+
+    if (!resposta.ok) {
+
+        throw new Error(
+            `Erro EUA ${ticker}: ${resposta.status}`
+        );
+
+    }
+
+
+    const dados =
+        await resposta.json();
+
+
+    const preco =
+        Number(
+            dados.USD
+        );
+
+
+    if (
+        !Number.isFinite(preco) ||
+        preco <= 0
+    ) {
+
+        throw new Error(
+            `Preço inválido para ${ticker}`
+        );
+
+    }
+
+
+    return {
+
+        preco,
+
+        moeda: "USD"
+
+    };
+
+}
+
+
+
+// =====================================
+// BUSCAR COTAÇÃO CRYPTO
+// =====================================
+
+async function buscarCotacaoCrypto(ticker) {
+
+    const simbolo =
+        normalizarCrypto(
+            ticker
+        );
+
+
+    const id =
+        mapearCryptoId(
+            simbolo
+        );
+
+
+    const resposta =
+        await fetch(
+            `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(id)}&vs_currencies=usd,brl`
+        );
+
+
+    if (!resposta.ok) {
+
+        throw new Error(
+            `Erro Crypto ${ticker}: ${resposta.status}`
+        );
+
+    }
+
+
+    const dados =
+        await resposta.json();
+
+
+    if (
+        !dados[id]
+    ) {
+
+        throw new Error(
+            `Cotação não encontrada para ${ticker}`
+        );
+
+    }
+
+
+    const moeda =
+        String(
+            ticker
+        )
+        .toUpperCase()
+        .includes("/BRL")
+            ? "BRL"
+            : "USD";
+
+
+    const preco =
+        Number(
+            moeda === "BRL"
+                ? dados[id].brl
+                : dados[id].usd
+        );
+
+
+    if (
+        !Number.isFinite(preco) ||
+        preco <= 0
+    ) {
+
+        throw new Error(
+            `Preço inválido para ${ticker}`
+        );
+
+    }
+
+
+    return {
+
+        preco,
+
+        moeda
+
+    };
+
+}
+
+
+
+// =====================================
+// BUSCAR CÂMBIO USD/BRL
+// =====================================
+
+async function buscarDolarBRL() {
+
+    try {
+
+        const resposta =
+            await fetch(
+                "https://economia.awesomeapi.com.br/json/last/USD-BRL"
+            );
+
+
+        if (!resposta.ok) {
+
+            throw new Error(
+                "Erro ao buscar dólar."
+            );
+
+        }
+
+
+        const dados =
+            await resposta.json();
+
+
+        const valor =
+            Number(
+                dados.USDBRL?.bid
+            );
+
+
+        if (
+            !Number.isFinite(valor) ||
+            valor <= 0
+        ) {
+
+            throw new Error(
+                "Dólar inválido."
+            );
+
+        }
+
+
+        return valor;
+
+    }
+
+    catch (erro) {
+
+        console.warn(
+            "Não foi possível buscar o dólar:",
+            erro
+        );
+
+
+        /*
+            Valor de segurança.
+
+            Só será usado caso a API
+            de câmbio esteja indisponível.
+        */
+
+        return 5;
+
+    }
+
+}
+
+
+
+// =====================================
+// BUSCAR COTAÇÃO AUTOMATICAMENTE
+// =====================================
+
+async function buscarCotacaoAtivo(ativo) {
+
+    const categoria =
+        String(
+            ativo.categoria ||
+            "EUA"
+        )
+        .trim()
+        .toUpperCase();
+
+
+    if (
+        categoria === "B3"
+    ) {
+
+        return buscarCotacaoB3(
+            ativo.ticker
+        );
+
+    }
+
+
+    if (
+        categoria === "CRYPTO"
+    ) {
+
+        return buscarCotacaoCrypto(
+            ativo.ticker
+        );
+
+    }
+
+
+    return buscarCotacaoEUA(
+        ativo.ticker
+    );
+
+}
+
+
+
+// =====================================
+// CONVERTER PARA BRL
+// =====================================
+
+function converterParaBRL(
+    valor,
+    moeda,
+    dolarBRL
+) {
+
+    if (
+        moeda === "USD"
+    ) {
+
+        return valor * dolarBRL;
+
+    }
+
+
+    return valor;
+
+}
+
+
+
+// =====================================
+// ATUALIZAR DADOS DA CARTEIRA
+// =====================================
+
+async function prepararCarteiraParaIA(
+    ativos,
+    status
+) {
+
+    /*
+        Primeiro busca o dólar.
+
+        Isso permite comparar:
+
+        B3
+        EUA
+        Crypto
+
+        tudo em BRL.
+    */
+
+    status.textContent =
+        "Buscando cotação do dólar...";
+
+
+    const dolarBRL =
+        await buscarDolarBRL();
+
+
+    console.log(
+        "USD/BRL:",
+        dolarBRL
+    );
+
+
+    const ativosAtualizados =
+        [];
+
+
+    /*
+        =================================
+        BUSCAR TODAS AS COTAÇÕES
+        =================================
+    */
+
+    for (
+        let i = 0;
+        i < ativos.length;
+        i++
+    ) {
+
+        const ativo =
+            ativos[i];
+
+
+        status.textContent =
+            `Buscando cotação de ${ativo.ticker} (${i + 1}/${ativos.length})...`;
+
+
+        try {
+
+            const cotacao =
+                await buscarCotacaoAtivo(
+                    ativo
+                );
+
+
+            const quantidade =
+                Number(
+                    ativo.quantidade
+                ) || 0;
+
+
+            const precoMedio =
+                Number(
+                    ativo.precoMedio
+                ) || 0;
+
+
+            /*
+                Valor investido na moeda
+                original do ativo.
+            */
+
+            const valorInvestidoOriginal =
+                quantidade *
+                precoMedio;
+
+
+            /*
+                Valor atual na moeda
+                original.
+            */
+
+            const valorAtualOriginal =
+                quantidade *
+                cotacao.preco;
+
+
+            /*
+                Converte para BRL
+                para comparar toda
+                a carteira.
+            */
+
+            const valorInvestidoBRL =
+                converterParaBRL(
+                    valorInvestidoOriginal,
+                    cotacao.moeda,
+                    dolarBRL
+                );
+
+
+            const valorAtualBRL =
+                converterParaBRL(
+                    valorAtualOriginal,
+                    cotacao.moeda,
+                    dolarBRL
+                );
+
+
+            const lucroBRL =
+                valorAtualBRL -
+                valorInvestidoBRL;
+
+
+            const rentabilidade =
+                valorInvestidoBRL > 0
+
+                    ?
+
+                    (
+                        lucroBRL /
+                        valorInvestidoBRL
+                    ) * 100
+
+                    :
+
+                    0;
+
+
+            ativosAtualizados.push({
+
+                ...ativo,
+
+                precoAtual:
+                    cotacao.preco,
+
+                moeda:
+                    cotacao.moeda,
+
+                dolarBRL,
+
+                valorInvestido:
+                    valorInvestidoBRL,
+
+                valorAtual:
+                    valorAtualBRL,
+
+                lucro:
+                    lucroBRL,
+
+                rentabilidade,
+
+                peso:
+                    0
+
+            });
+
+
+        }
+
+        catch (erro) {
+
+            console.error(
+                `Erro na cotação de ${ativo.ticker}:`,
+                erro
+            );
+
+
+            /*
+                Mantemos o ativo mesmo
+                se uma cotação falhar.
+
+                Assim a IA continua
+                analisando os outros.
+            */
+
+            ativosAtualizados.push({
+
+                ...ativo,
+
+                precoAtual:
+                    Number(
+                        ativo.precoAtual
+                    ) || 0,
+
+                valorInvestido:
+                    Number(
+                        ativo.valorInvestido
+                    ) || 0,
+
+                valorAtual:
+                    Number(
+                        ativo.valorAtual
+                    ) || 0,
+
+                lucro:
+                    Number(
+                        ativo.lucro
+                    ) || 0,
+
+                rentabilidade:
+                    Number(
+                        ativo.rentabilidade
+                    ) || 0,
+
+                peso:
+                    0,
+
+                erroCotacao:
+                    erro.message
+
+            });
+
+        }
+
+    }
+
+
+    /*
+        =================================
+        CALCULAR PESOS
+        =================================
+    */
+
+    const patrimonioTotal =
+        ativosAtualizados.reduce(
+            (
+                soma,
+                ativo
+            ) =>
+                soma +
+                (
+                    Number(
+                        ativo.valorAtual
+                    ) || 0
+                ),
+            0
+        );
+
+
+    ativosAtualizados.forEach(
+        ativo => {
+
+            const valorAtual =
+                Number(
+                    ativo.valorAtual
+                ) || 0;
+
+
+            ativo.peso =
+                patrimonioTotal > 0
+
+                    ?
+
+                    (
+                        valorAtual /
+                        patrimonioTotal
+                    ) * 100
+
+                    :
+
+                    0;
+
+        }
+    );
+
+
+    console.log(
+        "Carteira preparada:"
+    );
+
+
+    console.table(
+        ativosAtualizados.map(
+            ativo => ({
+
+                ticker:
+                    ativo.ticker,
+
+                categoria:
+                    ativo.categoria,
+
+                quantidade:
+                    ativo.quantidade,
+
+                precoMedio:
+                    ativo.precoMedio,
+
+                precoAtual:
+                    ativo.precoAtual,
+
+                moeda:
+                    ativo.moeda,
+
+                valorInvestido:
+                    ativo.valorInvestido,
+
+                valorAtual:
+                    ativo.valorAtual,
+
+                lucro:
+                    ativo.lucro,
+
+                rentabilidade:
+                    ativo.rentabilidade,
+
+                peso:
+                    ativo.peso
+
+            })
+        )
+    );
+
+
+    return ativosAtualizados;
+
+}
+
+
+
+// =====================================
+// ANALISAR CARTEIRA
+// =====================================
+
+async function analisarMinhaCarteira() {
+
+    const carteira =
+        obterCarteira();
+
+
+    const ativos =
+        obterAtivosCarteira();
+
+
+    if (
+        carteira.length === 0 ||
+        ativos.length === 0
+    ) {
+
+        alert(
+            "Sua carteira está vazia."
+        );
+
+        return;
+
+    }
+
+
+    const botao =
+        document.getElementById(
+            "btn-analisar"
+        );
+
+
+    const status =
+        document.getElementById(
+            "status"
+        );
+
+
+    const resultado =
+        document.getElementById(
+            "resultado"
+        );
+
+
+    botao.disabled =
+        true;
+
+
+    resultado.classList.remove(
+        "ativo"
+    );
+
+
+    try {
+
+        /*
+            =================================
+            ETAPA 1
+            =================================
+        */
+
+        status.textContent =
+            `Encontrados ${ativos.length} ativo(s).`;
+
+
+        /*
+            =================================
+            ETAPA 2
+            BUSCAR COTAÇÕES
+            =================================
+        */
+
+        const carteiraAtualizada =
+            await prepararCarteiraParaIA(
+                ativos,
+                status
+            );
+
+
+        /*
+            =================================
+            ETAPA 3
+            ENVIAR PARA IA
+            =================================
+        */
+
+        status.textContent =
+            "Cotações atualizadas. Enviando carteira para Gemini e Groq...";
+
+
+        const resposta =
+            await fetch(
+                `${API}/ia/analisar-carteira`,
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            carteira:
+                                carteiraAtualizada
+
+                        })
+
+                }
+            );
+
+
+        if (
+            !resposta.ok
+        ) {
+
+            const erroTexto =
+                await resposta.text();
+
+
+            throw new Error(
+                erroTexto ||
+                `Erro do servidor: ${resposta.status}`
+            );
+
+        }
+
+
+        const dados =
+            await resposta.json();
+
+
+        if (
+            !dados.sucesso
+        ) {
+
+            throw new Error(
+                dados.erro ||
+                "A análise não foi concluída."
+            );
+
+        }
+
+
+        mostrarResultado(
+            dados
+        );
+
+
+        status.textContent =
+            `Análise concluída: ${dados.quantidadeAtivos} ativo(s).`;
+
+    }
+
+
+    catch (erro) {
+
+        console.error(
+            "Erro na análise:",
+            erro
+        );
+
+
+        status.innerHTML =
+            `
+            <div class="erro">
+
+                Não foi possível analisar a carteira.
+
+                <br><br>
+
+                ${erro.message}
+
+            </div>
+            `;
+
+    }
+
+
+    finally {
+
+        botao.disabled =
+            false;
+
+    }
+
+}
+
+
+
+// =====================================
+// MOSTRAR RESULTADO
+// =====================================
+
+function mostrarResultado(
+    dados
+) {
+
+    const resultado =
+        document.getElementById(
+            "resultado"
+        );
+
+
+    const resumo =
+        document.getElementById(
+            "resumo"
+        );
+
+
+    const ativos =
+        document.getElementById(
+            "ativos"
+        );
+
+
+    resultado.classList.add(
+        "ativo"
+    );
+
+
+    const carteira =
+        dados.carteira ||
+        {};
+
+
+    const pontuacao =
+        Number(
+            carteira.pontuacao
+        ) || 0;
+
+
+    const sentimento =
+        String(
+            carteira.sentimento ||
+            "NEUTRO"
+        )
+        .toUpperCase();
+
+
+    let classeSentimento =
+        "neutro";
+
+
+    if (
+        sentimento ===
+        "POSITIVO"
+    ) {
+
+        classeSentimento =
+            "positivo";
+
+    }
+
+
+    if (
+        sentimento ===
+        "NEGATIVO"
+    ) {
+
+        classeSentimento =
+            "negativo";
+
+    }
+
+
+    resumo.innerHTML =
+        `
+
+        <h2>
+            📊 Visão geral da carteira
+        </h2>
+
+        <p>
+
+            Ativos analisados:
+
+            <strong>
+                ${dados.quantidadeAtivos || 0}
+            </strong>
+
+        </p>
+
+
+        <p>
+
+            Sentimento geral:
+
+            <strong
+                class="${classeSentimento}"
+            >
+                ${sentimento}
+            </strong>
+
+        </p>
+
+
+        <p>
+
+            Pontuação da carteira:
+
+            <strong class="pontuacao">
+
+                ${pontuacao.toFixed(2)}
+
+            </strong>
+
+            / 10
+
+        </p>
+
+
+        ${
+            carteira.analise
+
+                ?
+
+                `
+                <p class="analise-texto">
+                    ${carteira.analise}
+                </p>
+                `
+
+                :
+
+                ""
+        }
+
+        `;
+
+
+    ativos.innerHTML =
+        "";
+
+
+    if (
+        !Array.isArray(
+            dados.ativos
+        ) ||
+        dados.ativos.length === 0
+    ) {
+
+        ativos.innerHTML =
+            `
+
+            <div class="ativo-analise">
+
+                <p class="vazio">
+                    Nenhum ativo foi retornado pela análise.
+                </p>
+
+            </div>
+
+            `;
+
+        return;
+
+    }
+
+
+    dados.ativos.forEach(
+        ativo => {
+
+            const impacto =
+                String(
+                    ativo.impacto ||
+                    "neutro"
+                )
+                .toLowerCase();
+
+
+            const perspectiva =
+                String(
+                    ativo.perspectiva ||
+                    "neutra"
+                )
+                .toLowerCase();
+
+
+            const pontuacaoAtivo =
+                Number(
+                    ativo.pontuacao
+                ) || 0;
+
+
+            let classeImpacto =
+                "neutro";
+
+
+            let simbolo =
+                "🟡";
+
+
+            if (
+                impacto ===
+                "positivo"
+            ) {
+
+                classeImpacto =
+                    "positivo";
+
+                simbolo =
+                    "🟢";
+
+            }
+
+
+            if (
+                impacto ===
+                "negativo"
+            ) {
+
+                classeImpacto =
+                    "negativo";
+
+                simbolo =
+                    "🔴";
+
+            }
+
+
+            let classePerspectiva =
+                "neutro";
+
+
+            if (
+                perspectiva ===
+                "favoravel"
+            ) {
+
+                classePerspectiva =
+                    "favoravel";
+
+            }
+
+
+            if (
+                perspectiva ===
+                "cautela"
+            ) {
+
+                classePerspectiva =
+                    "cautela";
+
+            }
+
+
+            ativos.innerHTML +=
+                `
+
+                <div
+                    class="ativo-analise"
+                >
+
+                    <div
+                        class="ativo-topo"
+                    >
+
+                        <div>
+
+                            <span
+                                class="ticker"
+                            >
+                                ${ativo.ticker}
+                            </span>
+
+                            <span
+                                class="categoria"
+                            >
+                                ${ativo.categoria || ""}
+                            </span>
+
+                        </div>
+
+
+                        <strong
+                            class="${classeImpacto}"
+                        >
+
+                            ${simbolo}
+
+                            ${impacto.toUpperCase()}
+
+                        </strong>
+
+                    </div>
+
+
+                    <p class="info">
+
+                        Perspectiva:
+
+                        <strong
+                            class="${classePerspectiva}"
+                        >
+
+                            ${perspectiva.toUpperCase()}
+
+                        </strong>
+
+                    </p>
+
+
+                    <p class="info">
+
+                        Pontuação:
+
+                        <strong>
+                            ${pontuacaoAtivo.toFixed(2)}
+                        </strong>
+
+                        / 10
+
+                    </p>
+
+
+                    <div class="dados-mercado">
+
+                        <p class="info">
+
+                            Preço atual:
+
+                            <strong>
+                                ${formatarPreco(
+                                    ativo.precoAtual,
+                                    ativo.moeda
+                                )}
+                            </strong>
+
+                        </p>
+
+
+                        <p class="info">
+
+                            Valor investido:
+
+                            <strong>
+                                ${formatarBRL(
+                                    ativo.valorInvestido
+                                )}
+                            </strong>
+
+                        </p>
+
+
+                        <p class="info">
+
+                            Valor atual:
+
+                            <strong>
+                                ${formatarBRL(
+                                    ativo.valorAtual
+                                )}
+                            </strong>
+
+                        </p>
+
+
+                        <p class="info">
+
+                            Resultado:
+
+                            <strong
+                                class="${
+                                    Number(
+                                        ativo.lucro
+                                    ) >= 0
+
+                                        ? "positivo"
+
+                                        : "negativo"
+                                }"
+                            >
+
+                                ${formatarBRL(
+                                    ativo.lucro
+                                )}
+
+                            </strong>
+
+                        </p>
+
+
+                        <p class="info">
+
+                            Rentabilidade:
+
+                            <strong
+                                class="${
+                                    Number(
+                                        ativo.rentabilidade
+                                    ) >= 0
+
+                                        ? "positivo"
+
+                                        : "negativo"
+                                }"
+                            >
+
+                                ${Number(
+                                    ativo.rentabilidade
+                                ).toFixed(2)}%
+
+                            </strong>
+
+                        </p>
+
+
+                        <p class="info">
+
+                            Peso na carteira:
+
+                            <strong>
+                                ${Number(
+                                    ativo.peso
+                                ).toFixed(2)}%
+                            </strong>
+
+                        </p>
+
+                    </div>
+
+
+                    <p
+                        class="analise-texto"
+                    >
+
+                        ${ativo.analise ||
+                            "Sem análise disponível."}
+
+                    </p>
+
+                </div>
+
+                `;
+
+        }
+    );
+
+}
+
+
+
+// =====================================
+// FORMATAÇÃO
+// =====================================
+
+function formatarBRL(valor) {
+
+    const numero =
+        Number(valor) || 0;
+
+
+    return numero.toLocaleString(
+        "pt-BR",
+        {
+
+            style:
+                "currency",
+
+            currency:
+                "BRL"
+
+        }
+    );
+
+}
+
+
+
+function formatarPreco(
+    valor,
+    moeda
+) {
+
+    const numero =
+        Number(valor) || 0;
+
+
+    const moedaFinal =
+        moeda === "USD"
+            ? "USD"
+            : "BRL";
+
+
+    return numero.toLocaleString(
+        "pt-BR",
+        {
+
+            style:
+                "currency",
+
+            currency:
+                moedaFinal
+
+        }
+    );
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>

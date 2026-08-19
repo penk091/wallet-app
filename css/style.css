@@ -1,0 +1,617 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #000;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
+}
+
+.app {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 35px 22px 50px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 28px;
+    letter-spacing: 8px;
+    margin-bottom: 40px;
+}
+
+.patrimonio {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.patrimonio p {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.patrimonio h2 {
+    font-size: 38px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.resultado {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    color: #35d07f;
+    font-size: 15px;
+}
+
+.evolucao,
+.composicao {
+    margin-bottom: 35px;
+}
+
+h3 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.grafico {
+    height: 190px;
+    border: 1px solid #222;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    background: #080808;
+}
+
+.periodos {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.periodos button {
+    background: transparent;
+    color: #777;
+    border: none;
+    padding: 7px 10px;
+    cursor: pointer;
+}
+
+.periodos button:hover {
+    color: #fff;
+}
+
+.pizza {
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    background: #151515;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+}
+
+.legenda {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.legenda p {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #aaa;
+}
+
+.legenda strong {
+    margin-left: auto;
+    color: #fff;
+}
+
+.bolinha {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.b3 {
+    background: #f5c542;
+}
+
+.eua {
+    background: #4d8cff;
+}
+
+.crypto {
+    background: #ff8c42;
+}
+
+.botoes {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.botoes button {
+    width: 100%;
+    background: #0d0d0d;
+    color: #fff;
+    border: 1px solid #222;
+    border-radius: 14px;
+    padding: 18px;
+    font-size: 16px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.2s;
+}
+
+.botoes button:hover {
+    background: #151515;
+    border-color: #333;
+}
+
+.botoes button span {
+    color: #777;
+    font-size: 20px;
+}
+.atualizacao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 15px;
+    color: #555;
+    font-size: 12px;
+}
+
+.atualizacao button {
+    background: transparent;
+    color: #888;
+    border: 1px solid #222;
+    border-radius: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.atualizacao button:hover {
+    color: #fff;
+    border-color: #444;
+}
+.voltar {
+    background: transparent;
+    border: none;
+    color: #777;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 30px;
+}
+
+.voltar:hover {
+    color: #fff;
+}
+
+.resumo-carteira {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.resumo-carteira p {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.resumo-carteira h2 {
+    font-size: 34px;
+    margin-bottom: 10px;
+}
+
+.categoria {
+    margin-bottom: 30px;
+}
+
+.categoria h3 {
+    margin-bottom: 12px;
+}
+
+.vazio {
+    color: #444;
+    font-size: 14px;
+    padding: 15px 0;
+}
+
+.ativo-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #0d0d0d;
+    border: 1px solid #222;
+    border-radius: 14px;
+
+    padding: 16px;
+    margin-bottom: 10px;
+}
+
+.ativo-card strong {
+    font-size: 17px;
+}
+
+.ativo-card p {
+    color: #777;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.ativo-card button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    opacity: 0.6;
+}
+
+.ativo-card button:hover {
+    opacity: 1;
+}
+
+.adicionar-ativo {
+    width: 100%;
+
+    background: #fff;
+    color: #000;
+
+    border: none;
+    border-radius: 14px;
+
+    padding: 17px;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    margin-top: 5px;
+}
+
+.adicionar-ativo:hover {
+    background: #ddd;
+}
+
+.formulario {
+    display: none;
+
+    margin-top: 20px;
+
+    background: #0d0d0d;
+    border: 1px solid #222;
+    border-radius: 16px;
+
+    padding: 20px;
+}
+
+.formulario.ativo {
+    display: block;
+}
+
+.formulario-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 25px;
+}
+
+.formulario-topo button {
+    background: transparent;
+    color: #777;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.formulario label {
+    display: block;
+
+    color: #888;
+
+    font-size: 13px;
+
+    margin-bottom: 7px;
+    margin-top: 15px;
+}
+
+.formulario input,
+.formulario select {
+    width: 100%;
+
+    background: #080808;
+    color: #fff;
+
+    border: 1px solid #252525;
+    border-radius: 10px;
+
+    padding: 13px;
+
+    outline: none;
+}
+
+.formulario input:focus,
+.formulario select:focus {
+    border-color: #555;
+}
+
+.salvar-ativo {
+    width: 100%;
+
+    background: #fff;
+    color: #000;
+
+    border: none;
+    border-radius: 10px;
+
+    padding: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    margin-top: 25px;
+}
+
+.salvar-ativo:hover {
+    background: #ddd;
+}
+.acoes-ativo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.acoes-ativo button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    opacity: 0.6;
+}
+
+.acoes-ativo button:hover {
+    opacity: 1;
+}
+
+.acoes-ativo .editar {
+    color: #aaa;
+}
+
+.acoes-ativo .excluir {
+    color: #aaa;
+} 
+/* SELETOR DE MOEDA */
+
+.moeda-switch {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-top: -25px;
+    margin-bottom: 12px;
+}
+
+.moeda-switch button {
+    background: #0d0d0d;
+    color: #666;
+    border: 1px solid #222;
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.moeda-switch button:hover {
+    color: #fff;
+}
+
+.moeda-switch button.moeda-ativa {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+}
+
+
+/* COTAÇÃO DO DÓLAR */
+
+.cotacao-dolar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    color: #777;
+    font-size: 12px;
+
+    margin-bottom: 35px;
+}
+
+#atualizacao-dolar {
+    color: #444;
+}
+/* GRÁFICO DE PIZZA */
+
+.pizza {
+    width: 210px;
+    height: 210px;
+    border-radius: 50%;
+
+    background: conic-gradient(
+        #f5c542 0% 33.33%,
+        #4d8cff 33.33% 66.66%,
+        #ff8c42 66.66% 100%
+    );
+
+    margin: 20px auto;
+
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: background 0.5s ease;
+}
+
+/* Círculo interno para deixar estilo "donut" */
+
+.pizza::after {
+    content: "";
+
+    width: 125px;
+    height: 125px;
+
+    background: #000;
+
+    border-radius: 50%;
+
+    position: absolute;
+}
+.grafico {
+    height: 250px;
+    padding: 15px;
+}
+/* RESUMO DE DIVIDENDOS */
+
+.resumo-dividendos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+
+    margin-top: 14px;
+
+    font-size: 13px;
+}
+
+.resumo-dividendos span {
+    color: #777;
+}
+
+.resumo-dividendos strong {
+    color: #35d07f;
+}
+
+
+/* FORMULÁRIO DE DIVIDENDOS */
+
+.ativo-dividendo {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.valor-por-acao {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 18px;
+    padding: 13px;
+
+    background: #080808;
+    border: 1px solid #222;
+    border-radius: 10px;
+}
+
+.valor-por-acao span {
+    color: #777;
+    font-size: 13px;
+}
+
+.valor-por-acao strong {
+    color: #35d07f;
+}
+
+
+/* HISTÓRICO */
+
+.historico-dividendos {
+    margin-top: 35px;
+}
+
+.historico-dividendos h3 {
+    margin-bottom: 15px;
+}
+
+.dividendo-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #0d0d0d;
+    border: 1px solid #222;
+    border-radius: 14px;
+
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+.dividendo-card strong {
+    font-size: 15px;
+}
+
+.dividendo-card p {
+    color: #777;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.dividendo-card > div:last-child {
+    text-align: right;
+}
+
+.dividendo-card > div:last-child strong {
+    color: #35d07f;
+}
+
+
+/* BOTÃO DE DIVIDENDO */
+
+.acoes-ativo .dividendo {
+    color: #35d07f;
+}
+
+.ativo-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.peso-ativo {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    background: #151515;
+    border: 1px solid #252525;
+    border-radius: 7px;
+    padding: 4px 8px;
+}
